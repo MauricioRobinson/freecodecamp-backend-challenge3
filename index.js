@@ -23,11 +23,14 @@ app.get('/', function (req, res) {
 
 app.post('/api/shorturl', function (req, res) {
   const originalUrl = req.body.url;
-  const urlObject = url.parse(originalUrl);
 
-  if (new URL(originalUrl)) {
-    res.json({ error: 'invalid url' });
+  // Check if URL starts with http:// or https://
+  const urlFormat = /^https?:\/\//i;
+  if (!urlFormat.test(originalUrl)) {
+    return res.json({ error: 'invalid url' });
   }
+
+  const urlObject = url.parse(originalUrl);
 
   dns.lookup(urlObject.hostname, (err) => {
     if (err) {
