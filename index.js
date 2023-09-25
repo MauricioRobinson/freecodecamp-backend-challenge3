@@ -25,6 +25,10 @@ app.post('/api/shorturl', function (req, res) {
   const originalUrl = req.body.url;
   const urlObject = url.parse(originalUrl);
 
+  if (new URL(originalUrl)) {
+    res.json({ error: 'invalid url' });
+  }
+
   dns.lookup(urlObject.hostname, (err) => {
     if (err) {
       res.json({ error: 'invalid url' });
@@ -47,7 +51,7 @@ app.get('/api/shorturl/:short_url', function (req, res) {
   if (originalUrl) {
     res.redirect(originalUrl);
   } else {
-    res.json({ error: 'invalid url' });
+    res.json({ error: 'No short URL found for given input' });
   }
 });
 
